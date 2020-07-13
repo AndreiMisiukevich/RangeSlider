@@ -1,7 +1,5 @@
-﻿using System;
-using RangeSelection;
+﻿using RangeSelection;
 using Xamarin.Forms;
-using Xamarin.Forms.Xaml;
 
 namespace RangeSelectorViewSample
 {
@@ -27,6 +25,13 @@ namespace RangeSelectorViewSample
                                 Text = "X",
                                 VerticalTextAlignment = TextAlignment.Center,
                                 HorizontalTextAlignment = TextAlignment.Center
+                            },
+                            LowerValueLabelStyle = new Style(typeof(Label))
+                            {
+                                Setters =
+                                {
+                                    new Setter { Property = Label.FontAttributesProperty, Value = FontAttributes.Bold}
+                                }
                             }
                         }
                     }

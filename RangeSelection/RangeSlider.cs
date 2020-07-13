@@ -90,11 +90,13 @@ namespace RangeSelection
 
         readonly PanGestureRecognizer upperThumbGestureRecognizer = new PanGestureRecognizer();
 
-        RangeSliderLayout rangeSliderLayout;
-
         Size allocatedSize;
 
         double labelMaxHeight;
+
+        double lowerTranslation;
+
+        double upperTranslation;
 
         public RangeSlider()
             => ControlTemplate = new ControlTemplate(typeof(RangeSliderLayout));
@@ -249,37 +251,7 @@ namespace RangeSelection
             set => SetValue(ValueLabelSpacingProperty, value);
         }
 
-        RangeSliderLayout Content
-        {
-            get => rangeSliderLayout;
-            set
-            {
-                if(rangeSliderLayout != null)
-                {
-                    LowerValueLabel.RemoveBinding(Label.TextProperty);
-                    UpperValueLabel.RemoveBinding(Label.TextProperty);
-                    RemoveGestureRecognizer(LowerThumb, lowerThumbGestureRecognizer);
-                    RemoveGestureRecognizer(UpperThumb, upperThumbGestureRecognizer);
-                    Track.SizeChanged -= OnViewSizeChanged;
-                    LowerThumb.SizeChanged -= OnViewSizeChanged;
-                    UpperThumb.SizeChanged -= OnViewSizeChanged;
-                    LowerValueLabel.SizeChanged -= OnViewSizeChanged;
-                    UpperValueLabel.SizeChanged -= OnViewSizeChanged;
-                }
-                rangeSliderLayout = value;
-                if (rangeSliderLayout != null)
-                {
-                    AddGestureRecognizer(LowerThumb, lowerThumbGestureRecognizer);
-                    AddGestureRecognizer(UpperThumb, upperThumbGestureRecognizer);
-                    Track.SizeChanged += OnViewSizeChanged;
-                    LowerThumb.SizeChanged += OnViewSizeChanged;
-                    UpperThumb.SizeChanged += OnViewSizeChanged;
-                    LowerValueLabel.SizeChanged += OnViewSizeChanged;
-                    UpperValueLabel.SizeChanged += OnViewSizeChanged;
-                    OnLayoutPropertyChanged();
-                }
-            }
-        }
+        RangeSliderLayout Content { get; set; }
 
         Frame Track => Content.Track;
 
@@ -304,6 +276,41 @@ namespace RangeSelection
 
             allocatedSize = new Size(width, height);
             OnLayoutPropertyChanged();
+        }
+
+        protected override void OnChildAdded(Element child)
+        {
+            base.OnChildAdded(child);
+            Content = child as RangeSliderLayout;
+            if (Content == null)
+                return;
+
+            AddGestureRecognizer(LowerThumb, lowerThumbGestureRecognizer);
+            AddGestureRecognizer(UpperThumb, upperThumbGestureRecognizer);
+            Track.SizeChanged += OnViewSizeChanged;
+            LowerThumb.SizeChanged += OnViewSizeChanged;
+            UpperThumb.SizeChanged += OnViewSizeChanged;
+            LowerValueLabel.SizeChanged += OnViewSizeChanged;
+            UpperValueLabel.SizeChanged += OnViewSizeChanged;
+            OnLayoutPropertyChanged();
+        }
+
+        protected override void OnChildRemoved(Element child)
+        {
+            base.OnChildRemoved(child);
+            if (Content == null)
+                return;
+
+            LowerValueLabel.RemoveBinding(Label.TextProperty);
+            UpperValueLabel.RemoveBinding(Label.TextProperty);
+            RemoveGestureRecognizer(LowerThumb, lowerThumbGestureRecognizer);
+            RemoveGestureRecognizer(UpperThumb, upperThumbGestureRecognizer);
+            Track.SizeChanged -= OnViewSizeChanged;
+            LowerThumb.SizeChanged -= OnViewSizeChanged;
+            UpperThumb.SizeChanged -= OnViewSizeChanged;
+            LowerValueLabel.SizeChanged -= OnViewSizeChanged;
+            UpperValueLabel.SizeChanged -= OnViewSizeChanged;
+            Content = null;
         }
 
         static object CoerceValue(BindableObject bindable, object value)
@@ -335,23 +342,29 @@ namespace RangeSelection
             var rangeValue = MaximumValue - MinimumValue;
             var trackWidth = TrackWidth;
 
-            var lowerTranslation = (LowerValue - MinimumValue) / rangeValue * trackWidth;
-            var upperTranslation = (UpperValue - MinimumValue) / rangeValue * trackWidth + LowerThumb.Width;
+            lowerTranslation = (LowerValue - MinimumValue) / rangeValue * trackWidth;
+            upperTranslation = (UpperValue - MinimumValue) / rangeValue * trackWidth + LowerThumb.Width;
 
             LowerThumb.TranslationX = lowerTranslation;
             UpperThumb.TranslationX = upperTranslation;
+            OnValueLabelTranslationChanged();
 
-            var spacing = 5;
-            var lowerLabelTranslation = lowerTranslation + (LowerThumb.Width - LowerValueLabel.Width) / 2;
-            var upperLabelTranslation = upperTranslation + (UpperThumb.Width - UpperValueLabel.Width) / 2;
-            LowerValueLabel.TranslationX = Min(Max(lowerLabelTranslation, 0), Width - LowerValueLabel.Width - UpperValueLabel.Width - spacing);
-            UpperValueLabel.TranslationX = Min(Max(upperLabelTranslation, LowerValueLabel.TranslationX + LowerValueLabel.Width + spacing), Width - UpperValueLabel.Width);
             var bounds = GetLayoutBounds(TrackHighlight);
             SetLayoutBounds(TrackHighlight, new Rectangle(lowerTranslation, bounds.Y, upperTranslation - lowerTranslation + UpperThumb.Width, bounds.Height));
         }
 
+        void OnValueLabelTranslationChanged()
+        {
+            var labelSpacing = 5;
+            var lowerLabelTranslation = lowerTranslation + (LowerThumb.Width - LowerValueLabel.Width) / 2;
+            var upperLabelTranslation = upperTranslation + (UpperThumb.Width - UpperValueLabel.Width) / 2;
+            LowerValueLabel.TranslationX = Min(Max(lowerLabelTranslation, 0), Width - LowerValueLabel.Width - UpperValueLabel.Width - labelSpacing);
+            UpperValueLabel.TranslationX = Min(Max(upperLabelTranslation, LowerValueLabel.TranslationX + LowerValueLabel.Width + labelSpacing), Width - UpperValueLabel.Width);
+        }
+
         void OnLayoutPropertyChanged()
         {
+            BatchBegin();
             Track.BatchBegin();
             TrackHighlight.BatchBegin();
             LowerThumb.BatchBegin();
@@ -386,7 +399,10 @@ namespace RangeSelection
             LowerThumb.Content = LowerThumbView;
             UpperThumb.Content = UpperThumbView;
 
-            var labelWithSpacingHeight = Max(LowerValueLabel.Height, UpperValueLabel.Height) + ValueLabelSpacing;
+            var labelWithSpacingHeight = Max(Max(LowerValueLabel.Height, UpperValueLabel.Height), 0);
+            if (labelWithSpacingHeight > 0)
+                labelWithSpacingHeight += ValueLabelSpacing;
+
             var trackThumbHeight = Max(Max(lowerThumbSize, upperThumbSize), trackSize);
             var trackVerticalPosition = labelWithSpacingHeight + (trackThumbHeight - trackSize) / 2;
             var lowerThumbVerticalPosition = labelWithSpacingHeight + (trackThumbHeight - lowerThumbSize) / 2;
@@ -414,13 +430,17 @@ namespace RangeSelection
             UpperThumb.BatchCommit();
             LowerValueLabel.BatchCommit();
             UpperValueLabel.BatchCommit();
+            BatchCommit();
         }
 
         void OnViewSizeChanged(object sender, System.EventArgs e)
         {
             var maxHeight = Max(LowerValueLabel.Height, UpperValueLabel.Height);
             if ((sender == LowerValueLabel || sender == UpperValueLabel) && labelMaxHeight == maxHeight)
+            {
+                BeginInvokeOnMainThread(OnValueLabelTranslationChanged);
                 return;
+            }
 
             labelMaxHeight = maxHeight;
             OnLayoutPropertyChanged();
@@ -544,12 +564,6 @@ namespace RangeSelection
                     LineBreakMode = LineBreakMode.NoWrap,
                     FontSize = GetNamedSize(NamedSize.Small, typeof(Label))
                 };
-
-            protected override void OnParentSet()
-            {
-                base.OnParentSet();
-                ((RangeSlider)Parent).Content = this;
-            }
         }
     }
 }
