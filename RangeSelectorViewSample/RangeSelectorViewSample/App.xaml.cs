@@ -19,7 +19,6 @@ namespace RangeSelectorViewSample
                         {
                             TrackSize = 10,
                             LowerThumbSize = 20,
-                            HorizontalOptions = LayoutOptions.FillAndExpand,
                             UpperThumbView = new Label
                             {
                                 Text = "X",

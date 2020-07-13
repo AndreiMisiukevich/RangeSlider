@@ -7,6 +7,10 @@ using static Xamarin.Forms.AbsoluteLayout;
 
 namespace RangeSelection
 {
+    // TODO:
+    // RangeSliderOrientation (Horizontal, Vertical)
+    // RangeSliderValueLabelPosition (Start, End)
+
     public class RangeSlider : TemplatedView
     {
         public static BindableProperty MinimumValueProperty
@@ -83,6 +87,18 @@ namespace RangeSelection
 
         public static BindableProperty ValueLabelSpacingProperty
             = BindableProperty.Create(nameof(ValueLabelSpacing), typeof(double), typeof(RangeSlider), 5.0, propertyChanged: OnLayoutPropertyChanged);
+
+        public static BindableProperty ThumbRadiusProperty
+           = BindableProperty.Create(nameof(ThumbRadius), typeof(double), typeof(RangeSlider), -1.0, propertyChanged: OnLayoutPropertyChanged);
+
+        public static BindableProperty LowerThumbRadiusProperty
+            = BindableProperty.Create(nameof(LowerThumbRadius), typeof(double), typeof(RangeSlider), -1.0, propertyChanged: OnLayoutPropertyChanged);
+
+        public static BindableProperty UpperThumbRadiusProperty
+            = BindableProperty.Create(nameof(UpperThumbRadius), typeof(double), typeof(RangeSlider), -1.0, propertyChanged: OnLayoutPropertyChanged);
+
+        public static BindableProperty TrackRadiusProperty
+            = BindableProperty.Create(nameof(TrackRadius), typeof(double), typeof(RangeSlider), -1.0, propertyChanged: OnLayoutPropertyChanged);
 
         readonly Dictionary<View, double> thumbPositionMap = new Dictionary<View, double>();
 
@@ -251,6 +267,30 @@ namespace RangeSelection
             set => SetValue(ValueLabelSpacingProperty, value);
         }
 
+        public double ThumbRadius
+        {
+            get => (double)GetValue(ThumbRadiusProperty);
+            set => SetValue(ThumbRadiusProperty, value);
+        }
+
+        public double LowerThumbRadius
+        {
+            get => (double)GetValue(LowerThumbRadiusProperty);
+            set => SetValue(LowerThumbRadiusProperty, value);
+        }
+
+        public double UpperThumbRadius
+        {
+            get => (double)GetValue(UpperThumbRadiusProperty);
+            set => SetValue(UpperThumbRadiusProperty, value);
+        }
+
+        public double TrackRadius
+        {
+            get => (double)GetValue(TrackRadiusProperty);
+            set => SetValue(TrackRadiusProperty, value);
+        }
+
         RangeSliderLayout Content { get; set; }
 
         Frame Track => Content.Track;
@@ -386,15 +426,13 @@ namespace RangeSelection
             TrackHighlight.BorderColor = GetColorOrDefault(TrackHighlightBorderColor, Color.Default);
 
             var trackSize = TrackSize;
-            var trackRadius = (float)trackSize / 2;
-            var lowerThumbSize = GetSizeOrDefault(LowerThumbSize, ThumbSize);
-            var lowerThumbRadius = (float)lowerThumbSize / 2;
-            var upperThumbSize = GetSizeOrDefault(UpperThumbSize, ThumbSize);
-            var upperThumbRadius = (float)upperThumbSize / 2;
+            var trackRadius = (float)GetDoubleOrDefault(TrackRadius, trackSize / 2);
+            var lowerThumbSize = GetDoubleOrDefault(LowerThumbSize, ThumbSize);
+            var upperThumbSize = GetDoubleOrDefault(UpperThumbSize, ThumbSize);
             Track.CornerRadius = trackRadius;
             TrackHighlight.CornerRadius = trackRadius;
-            LowerThumb.CornerRadius = lowerThumbRadius;
-            UpperThumb.CornerRadius = upperThumbRadius;
+            LowerThumb.CornerRadius = (float)GetDoubleOrDefault(GetDoubleOrDefault(LowerThumbRadius, ThumbRadius), lowerThumbSize / 2);
+            UpperThumb.CornerRadius = (float)GetDoubleOrDefault(GetDoubleOrDefault(UpperThumbRadius, ThumbRadius), upperThumbSize / 2);
 
             LowerThumb.Content = LowerThumbView;
             UpperThumb.Content = UpperThumbView;
@@ -519,10 +557,10 @@ namespace RangeSelection
                 ? defaultColor
                 : color;
 
-        double GetSizeOrDefault(double size, double defaultSize)
-            => size < 0
+        double GetDoubleOrDefault(double value, double defaultSize)
+            => value < 0
                 ? defaultSize
-                : size;
+                : value;
 
         sealed class RangeSliderLayout : AbsoluteLayout
         {
