@@ -7,8 +7,6 @@ using static Xamarin.Forms.AbsoluteLayout;
 
 namespace RangeSelection
 {
-    // TODO: Fix PanGestureRecognizer for Android
-
     public class RangeSlider : TemplatedView
     {
         public static BindableProperty MinimumValueProperty
@@ -452,15 +450,15 @@ namespace RangeSelection
             => thumbPositionMap[view] = view.TranslationX;
 
         void OnPanRunning(View view, double value)
-            => SetValue(view, value + thumbPositionMap[view]);
+            => UpdateValue(view, value + GetPanShiftValue(view));
 
         void OnPanCompleted(View view)
             => thumbPositionMap[view] = view.TranslationX;
 
         void OnPanCanceled(View view)
-            => SetValue(view, thumbPositionMap[view]);
+            => UpdateValue(view, thumbPositionMap[view]);
 
-        void SetValue(View view, double value)
+        void UpdateValue(View view, double value)
         {
             var rangeValue = MaximumValue - MinimumValue;
             if (view == LowerThumb)
@@ -470,6 +468,11 @@ namespace RangeSelection
             }
             UpperValue = Min(Max(LowerValue, (value - LowerThumb.Width) / TrackWidth * rangeValue + MinimumValue), MaximumValue);
         }
+
+        double GetPanShiftValue(View view)
+            => RuntimePlatform == Android
+                ? view.TranslationX
+                : thumbPositionMap[view];
 
         void SetValueLabelBinding(Label label, BindableProperty bindableProperty)
             => label.SetBinding(Label.TextProperty, new Binding

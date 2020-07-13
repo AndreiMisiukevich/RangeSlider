@@ -17,7 +17,6 @@ namespace RangeSelectorViewSample
                 {
                     VerticalOptions = LayoutOptions.CenterAndExpand,
                     Children = {
-                        //new BoxView { HeightRequest = 100, BackgroundColor = Color.Red },
                         new RangeSlider
                         {
                             TrackSize = 10,
