@@ -13,6 +13,9 @@ Range Slider control allows to select ranges in Xamarin.Forms apps.
 </ContentPage>
 ```
 
+## Sample
+The sample you can find [here](https://github.com/AndreiMisiukevich/RangeSlider/tree/master/RangeSelectorViewSample/RangeSelectorViewSample)
+
 ## Supported Properties
 
 | Name                        | Default Value | Description |
