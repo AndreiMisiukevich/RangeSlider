@@ -1,21 +1,63 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using RangeSelection;
 using Xamarin.Forms;
 
 namespace RangeSelectorViewSample
 {
-    // Learn more about making custom code visible in the Xamarin.Forms previewer
-    // by visiting https://aka.ms/xamarinforms-previewer
-    [DesignTimeVisible(false)]
     public partial class MainPage : ContentPage
     {
         public MainPage()
         {
             InitializeComponent();
+        }
+
+        void OnThumbSizeSwitchToggled(object sender, ToggledEventArgs e)
+        {
+            if (e.Value)
+            {
+                RangeSlider.SetBinding(RangeSlider.LowerThumbSizeProperty, GetSliderValueBinding(LowerThumbSizeSlider));
+                RangeSlider.SetBinding(RangeSlider.UpperThumbSizeProperty, GetSliderValueBinding(UpperThumbSizeSlider));
+                return;
+            }
+            RangeSlider.LowerThumbSize = (double)RangeSlider.LowerThumbSizeProperty.DefaultValue;
+            RangeSlider.UpperThumbSize = (double)RangeSlider.UpperThumbSizeProperty.DefaultValue;
+        }
+
+        Binding GetSliderValueBinding(object source)
+            => new Binding
+            {
+                Path = Slider.ValueProperty.PropertyName,
+                Source = source
+            };
+
+        void OnShapeCircleSwitchToggled(object sender, ToggledEventArgs e)
+        {
+            var radius = e.Value
+                ? -1
+                : 0;
+
+            if(sender == ThumbShapeCircleSwitch)
+            {
+                RangeSlider.ThumbRadius = radius;
+                return;
+            }
+
+            if (sender == LowerThumbShapeCircleSwitch)
+            {
+                RangeSlider.LowerThumbRadius = radius;
+                return;
+            }
+
+            if (sender == UpperThumbShapeCircleSwitch)
+            {
+                RangeSlider.UpperThumbRadius = radius;
+                return;
+            }
+
+            if (sender == TrackShapeRoundedSwitch)
+            {
+                RangeSlider.TrackRadius = radius;
+                return;
+            }
         }
     }
 }

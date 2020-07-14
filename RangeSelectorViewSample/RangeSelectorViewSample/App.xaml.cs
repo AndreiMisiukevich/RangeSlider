@@ -1,5 +1,4 @@
-﻿using RangeSelection;
-using Xamarin.Forms;
+﻿using Xamarin.Forms;
 
 namespace RangeSelectorViewSample
 {
@@ -9,33 +8,7 @@ namespace RangeSelectorViewSample
         {
             InitializeComponent();
 
-            MainPage = new ContentPage
-            {
-                Content = new StackLayout
-                {
-                    VerticalOptions = LayoutOptions.CenterAndExpand,
-                    Children = {
-                        new RangeSlider
-                        {
-                            TrackSize = 10,
-                            LowerThumbSize = 20,
-                            UpperThumbView = new Label
-                            {
-                                Text = "X",
-                                VerticalTextAlignment = TextAlignment.Center,
-                                HorizontalTextAlignment = TextAlignment.Center
-                            },
-                            LowerValueLabelStyle = new Style(typeof(Label))
-                            {
-                                Setters =
-                                {
-                                    new Setter { Property = Label.FontAttributesProperty, Value = FontAttributes.Bold}
-                                }
-                            }
-                        }
-                    }
-                }
-            };
+            MainPage = new NavigationPage(new MainPage());
         }
     }
 }

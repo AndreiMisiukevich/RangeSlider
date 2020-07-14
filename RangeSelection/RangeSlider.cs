@@ -4,6 +4,7 @@ using Xamarin.Forms.Internals;
 using static System.Math;
 using static Xamarin.Forms.Device;
 using static Xamarin.Forms.AbsoluteLayout;
+using System.Runtime.CompilerServices;
 
 namespace RangeSelection
 {
@@ -13,6 +14,10 @@ namespace RangeSelection
 
     public class RangeSlider : TemplatedView
     {
+        const double EnabledOpacity = 1;
+
+        const double DisabledOpacity = .6;
+
         public static BindableProperty MinimumValueProperty
             = BindableProperty.Create(nameof(MinimumValue), typeof(double), typeof(RangeSlider), .0, propertyChanged: OnMinimumMaximumValuePropertyChanged);
 
@@ -307,6 +312,13 @@ namespace RangeSelection
 
         double TrackWidth => Width - LowerThumb.Width - UpperThumb.Width;
 
+        protected override void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            base.OnPropertyChanged(propertyName);
+            if (propertyName == IsEnabledProperty.PropertyName)
+                OnIsEnabledChanged();
+        }
+
         protected override void OnSizeAllocated(double width, double height)
         {
             base.OnSizeAllocated(width, height);
@@ -332,6 +344,7 @@ namespace RangeSelection
             UpperThumb.SizeChanged += OnViewSizeChanged;
             LowerValueLabel.SizeChanged += OnViewSizeChanged;
             UpperValueLabel.SizeChanged += OnViewSizeChanged;
+            OnIsEnabledChanged();
             OnLayoutPropertyChanged();
         }
 
@@ -367,6 +380,16 @@ namespace RangeSelection
 
         static void OnLayoutPropertyChanged(BindableObject bindable, object oldValue, object newValue)
             => ((RangeSlider)bindable).OnLayoutPropertyChanged();
+
+        void OnIsEnabledChanged()
+        {
+            if (Content == null)
+                return;
+
+            Content.Opacity = IsEnabled
+                ? EnabledOpacity
+                : DisabledOpacity;
+        }
 
         double CoerceValue(double value)
             => value.Clamp(MinimumValue, MaximumValue);
