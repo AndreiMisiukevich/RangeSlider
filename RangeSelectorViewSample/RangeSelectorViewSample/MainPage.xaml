@@ -69,7 +69,7 @@
 
                 <Label Text="Thumb" FontSize="Title" FontAttributes="Bold"/>
 
-                <Frame Padding="15, 10">
+                <Frame Padding="15, 10" BackgroundColor="LightBlue">
                     <StackLayout Spacing="10">
                         <Label Text="Thumb Size" FontAttributes="Bold"/>
                         <Slider x:Name="ThumbSizeSlider" Maximum="50" Minimum="10" Value="30" />
@@ -112,7 +112,7 @@
 
                 <Label Text="Track" FontSize="Title" FontAttributes="Bold"/>
 
-                <Frame Padding="15, 10">
+                <Frame Padding="15, 10" BackgroundColor="LightBlue">
                     <StackLayout>
                         <Label Text="Track Size" FontAttributes="Bold" />
                         <Slider x:Name="TrackSizeSlider" Maximum="50" Minimum="1" Value="3" />
@@ -134,7 +134,7 @@
 
                 <Label Text="Other" FontSize="Title" FontAttributes="Bold"/>
 
-                <Frame Padding="15, 10">
+                <Frame Padding="15, 10" BackgroundColor="LightBlue">
                     <StackLayout>
                         <Label Text="Is Enabled" FontAttributes="Bold" />
                         <Switch x:Name="IsEnabledSwitch" IsToggled="True" />
