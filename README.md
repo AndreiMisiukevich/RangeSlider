@@ -2,6 +2,8 @@
 Range Slider allows to select ranges in Xamarin.Forms apps.
 Find on NuGet [here](https://www.nuget.org/packages/RangeSlider/).
 
+![sample](https://github.com/AndreiMisiukevich/RangeSlider/blob/master/images/sample.gif?raw=true)
+
 ## Setup
 * Available on NuGet: [CardsView](http://www.nuget.org/packages/RangeSlider) [![NuGet](https://img.shields.io/nuget/v/RangeSlider.svg?label=NuGet)](https://www.nuget.org/packages/RangeSlider)
 * Since this plugin is 100% crossplatform, you need to add the nuget package to your Xamarin.Forms .NETSTANDARD project only.
