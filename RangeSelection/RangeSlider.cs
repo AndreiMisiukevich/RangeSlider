@@ -8,10 +8,6 @@ using System.Runtime.CompilerServices;
 
 namespace RangeSelection
 {
-    // TODO:
-    // RangeSliderOrientation (Horizontal, Vertical)
-    // RangeSliderValueLabelPosition (Start, End)
-
     public class RangeSlider : TemplatedView
     {
         const double EnabledOpacity = 1;

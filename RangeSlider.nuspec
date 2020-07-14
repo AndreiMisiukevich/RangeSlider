@@ -1,0 +1,35 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+  <metadata>
+    <id>RangeSlider</id>
+    <version>1.0.0</version>
+    <title>RangeSlider</title>
+    <authors>Andrei Misiukevich</authors>
+    <owners>Andrei Misiukevich</owners>
+    <license type="expression">MIT</license>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <projectUrl>https://github.com/AndreiMisiukevich/RangeSlider</projectUrl>
+    <icon>images\logo.png</icon>
+    <description>Xamarin.Forms Range Slider</description>
+    <summary>Xamarin.Forms Range Slider</summary>
+    <tags>rangeslider, xamarin.forms, slider, range, xamarin</tags>
+    <dependencies>
+        <group>
+            <dependency id="Xamarin.Forms" version="3.0" />
+        </group>
+        <group targetFramework="netstandard10" />
+        <group targetFramework="netstandard20" />
+    </dependencies>
+    <releaseNotes>
+      See Changelog: https://github.com/AndreiMisiukevich/RangeSlider/releases
+    </releaseNotes>
+  </metadata>
+  <files>
+    <!--Icon-->
+    <file src="images\logo.png" target="images\" />
+    <!--Net Standard1.0-->
+    <file src="RangeSelection\bin\Release\netstandard1.0\RangeSelection.dll" target="lib\netstandard1.0\RangeSelection.dll" />
+    <!--Net Standard2.0-->
+    <file src="RangeSelection\bin\Release\netstandard2.0\RangeSelection.dll" target="lib\netstandard2.0\RangeSelection.dll" />
+  </files>
+</package>

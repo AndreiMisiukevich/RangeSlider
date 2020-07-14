@@ -51,7 +51,9 @@
                 TrackColor="{Binding SelectedItem, Source={x:Reference TrackColorPicker}}"
                 TrackHighlightColor="{Binding SelectedItem, Source={x:Reference TrackHighlightColorPicker}}"
                 TrackBorderColor="{Binding SelectedItem, Source={x:Reference TrackBorderColorPicker}}"
-                TrackHighlightBorderColor="{Binding SelectedItem, Source={x:Reference TrackHighlightBorderColorPicker}}">
+                TrackHighlightBorderColor="{Binding SelectedItem, Source={x:Reference TrackHighlightBorderColorPicker}}"
+                IsEnabled="{Binding IsToggled, Source={x:Reference IsEnabledSwitch}}"
+                ValueLabelSpacing="{Binding Value, Source={x:Reference ValueLabelSpacingSlider}}">
 
                 <range:RangeSlider.LowerThumbView>
                     <Label Text="L" VerticalTextAlignment="Center" HorizontalTextAlignment="Center" IsVisible="{Binding IsToggled, Source={x:Reference LowerThumbViewSwitch}}" />
@@ -127,6 +129,18 @@
 
                         <Label Text="Track Shape (CornerRadius -1 or 0)" FontAttributes="Bold" Margin="0, 20, 0, 0"/>
                         <Switch x:Name="TrackShapeRoundedSwitch" IsToggled="True" Toggled="OnShapeCircleSwitchToggled"/>
+                    </StackLayout>
+                </Frame>
+
+                <Label Text="Other" FontSize="Title" FontAttributes="Bold"/>
+
+                <Frame Padding="15, 10">
+                    <StackLayout>
+                        <Label Text="Is Enabled" FontAttributes="Bold" />
+                        <Switch x:Name="IsEnabledSwitch" IsToggled="True" />
+
+                        <Label Text="Value Label Spacing" FontAttributes="Bold" Margin="0, 20, 0, 0"/>
+                        <Slider x:Name="ValueLabelSpacingSlider" Maximum="25" Minimum="0" Value="5" />
                     </StackLayout>
                 </Frame>
             </StackLayout>
