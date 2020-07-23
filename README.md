@@ -1,3 +1,8 @@
+# IMPORTANT: THIS CONTROL IS MERGED INTO XamarinCommuninyToolkit
+
+**I recommend you to use it**
+https://github.com/xamarin/XamarinCommunityToolkit/pull/166
+
 ## RangeSlider
 Range Slider control allows to select ranges in Xamarin.Forms apps.
 
