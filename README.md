@@ -1,4 +1,4 @@
-# IMPORTANT: THIS CONTROL IS MERGED INTO XamarinCommuninyToolkit
+# IMPORTANT: THIS CONTROL WAS MERGED INTO XamarinCommuninyToolkit
 
 **I recommend you to use it**
 https://github.com/xamarin/XamarinCommunityToolkit/pull/166
